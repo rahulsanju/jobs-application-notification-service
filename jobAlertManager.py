@@ -27,7 +27,7 @@ def is_summer_2024_job_posted():
         res = requests.get(URL)
         for job in res.json()['jobs']:
             title = str(job['title']).upper()
-            if ("summer".upper() in title) and ("2024" in title):
+            if ("summer".upper() in title) or ("2024" in title):
                 return True
         if len(res.json()['jobs']) < 10:
             next_page_present = False
