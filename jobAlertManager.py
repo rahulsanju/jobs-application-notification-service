@@ -11,9 +11,7 @@ def run():
         send_email()
         return False
     else:
-        output_file = open("output.log", "a")
-        output_file.write("No Job found at : " + str(datetime.datetime.now()) + "\n")
-        output_file.close()
+        print("No Job found at : " + str(datetime.datetime.now()) + "\n")
         return True
 
 
@@ -37,19 +35,17 @@ def is_summer_2024_job_posted():
 
 
 def send_email(is_daily_remainder):
-    output_file = open("output.log", "a")
-
-    output_file.write("Sending email..!" + str(datetime.datetime.now()) + "\n")
+    print("Sending email..!" + str(datetime.datetime.now()) + "\n")
     fromMy = 'rahulmora007@yahoo.com'  # fun-fact: "from" is a keyword in python, you can't use it as variable.. did anyone check if this code even works?
     to = 'rahulmora007@yahoo.com'
     date = datetime.datetime.today().strftime("%d/%m/%Y")
     if not is_daily_remainder:
         message_text = '!!!! HURRYYY !!!!\n Summer 2024 internship application is posted! Apply ASAP.'
-        output_file.write("Job Posted Notification!!!" + "\n")
+        print("Job Posted Notification!!!" + "\n")
         subj = '!!!HURRY!!!! Amazon Job Posting released'
     else:
         subj = 'Acknowledgement notification'
-        output_file.write("Acknowledgement notification!" + "\n")
+        print("Acknowledgement notification!" + "\n")
         message_text = 'Job Notification program is running!'
 
     msg = "From: %s\nTo: %s\nSubject: %s\nDate: %s\n\n%s" % (fromMy, to, subj, date, message_text)
@@ -61,25 +57,23 @@ def send_email(is_daily_remainder):
     server.login(user=username, password=password)
     server.sendmail(fromMy, to, msg)
     server.quit()
-    output_file.write('ok the email has sent ' + str(datetime.datetime.now()) + "\n")
+    print('ok the email has sent ' + str(datetime.datetime.now()) + "\n")
 
-    output_file.close()
 
 
 if __name__ == "__main__":
     # Get the current time in Eastern Standard Time (EST)
     est = pytz.timezone('US/Eastern')
     current_time = datetime.datetime.now(est)
+    schedule.every().day.at("09:00").do(send_email, True)
     schedule.every().day.at("12:00").do(send_email, True)
+    schedule.every().day.at("12:30").do(send_email, True)
+    schedule.every().day.at("17:00").do(send_email, True)
     schedule.every().day.at("20:00").do(send_email, True)
     schedule.every().day.at("04:00").do(send_email, True)
     schedule.every(10).minutes.do(run)
 
-    global output_file
-
-    output_file = open("output.log", "w")
-    output_file.close()
-
+    print("Starting the application...")
     while True:
         schedule.run_pending()
         time.sleep(1)
